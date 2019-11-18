@@ -18,11 +18,11 @@ exports.cssLoaders = function (options) {
       minimize: process.env.NODE_ENV === 'production',
       sourceMap: options.sourceMap
     }
-  }
+  };
 
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
-    var loaders = [cssLoader]
+    var loaders = [cssLoader];
     if (loader) {
       loaders.push({
         loader: loader + '-loader',

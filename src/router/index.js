@@ -3,31 +3,31 @@ import Router from 'vue-router'
 import home from '@/components/home/home'
 import original from '@/components/more/original'
 import details from '@/components/details/details'
-import hua from '@/components/details/hua'
-import fanwai from '@/components/details/fanwai'
-import pinglun from '@/components/details/pinglun'
+import chapter from '@/components/details/chapter'
+import others from '@/components/details/others'
+import comment from '@/components/details/comment'
 
 //VueResource使用做http请求的
 //Vue.use(VueResource) 
-Vue.use(Router)
+Vue.use(Router);
 
 const routes = [
 {name:'home', path: '/home', component:home},
 {name:'original', path: '/original', component: original},
 {name:'details', path: '/details', component: details,
-redirect:'/hua',
+redirect:'/chapter',
       children: [
         {
-          path: '/hua',
-          component: hua
+          path: '/chapter',
+          component: chapter
         },
         {
-          path: '/fanwai',
-          component: fanwai
+          path: '/others',
+          component: others
         },
         {
-          path: '/pinglun',
-          component: pinglun
+          path: '/comment',
+          component: comment
         }
       ]}
 
