@@ -5,7 +5,7 @@
 
     <div class="imgList">
       <div class="titleBar">
-        <div class="icon left" v-bind:class="home.icon"></div>
+        <div class="icon left" v-bind:class="home.img"></div>
         <span class="title">{{home.title}}</span>
         <div class="more-wapper right" @click="toOriginal(home.id)">
           <span class="more">更多</span>
@@ -16,7 +16,7 @@
       </div>
       <ul>
         <li class="am-thumbnail" v-for="item in home.img_list" @click="showDetails(item.id)">
-          <img :src="item.banner" alt="" class="originalImg"/>
+          <img :src="item.cover" alt="" class="originalImg"/>
           <p class="d-nowrap">{{item.name}}</p>
         </li>
       </ul>
@@ -82,8 +82,7 @@
     },
     computed: {
       home() {
-        let home = this.$store.state.getHomeData.home;
-        return home;
+        return this.$store.state.getHomeData.home;
       }
 
     },

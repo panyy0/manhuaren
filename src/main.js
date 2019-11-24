@@ -11,8 +11,8 @@ router,
 store,
 template: '<App/>',
 components: {App}
-}).$mount('#app')
+}).$mount('#app');
 
 
 
-router.push('home')
+router.push('home');

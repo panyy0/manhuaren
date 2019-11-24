@@ -34,31 +34,29 @@
         </li>
       </ul>
       <div class="detailContent">
-        <p align="left" class="d-nowrap-clamp d-nowrap-clamp-2">
-          {{book.summary}}}
+        <p align="left" class="d-nowrap-clamp d-nowrap-clamp-2" :class="[active ? 'summary-show' : 'summary-hidden']">
+          {{book.summary}}
         </p>
-        <a href="javascript:showContent();" class="more">
-          <img src="http://js16.tel.cdndm.com/v201707041718/manhuaren/images/mobile/arrow_down.png"></a>
+        <div @click="showSummary" class="more">
+          <img :src="active ? arrowUp : arrowDown">
+        </div>
       </div>
     </div>
     <!--章节详情-->
     <div class="chapterList">
       <ul class="am-avg-sm-3 am-thumbnails selecter">
         <li>
-          <router-link to="/chapter">话（{{ }}）</router-link>
+          <div class="router-link-exact-active router-link-active">总共{{ totalCount }}话</div>
         </li>
-        <!--<li>
-          <router-link to="/pinglun">评论（{{ }}）</router-link>
-        </li>-->
       </ul>
-      <router-view></router-view>
-
+      <v-chapter v-on:showTotal="showTotal"></v-chapter>
     </div>
   </div>
 </template>
 
 <script>
   import partHeader from '../header/partHeader'
+  import chapter from '../details/chapter'
   import axios from 'axios'
 
   export default {
@@ -67,7 +65,11 @@
     },
     data() {
       return {
-        book: {}
+        book: {},
+        totalCount: 0,
+        active: false,
+        arrowUp: require("../../assets/icons/arrow_up.png"),
+        arrowDown: require("../../assets/icons/arrow_down.png")
       }
     },
     methods: {
@@ -89,11 +91,19 @@
           console.log(err)
         });
 
+      },
+
+      showTotal(count) {
+        this.totalCount = count
+      },
+
+      showSummary() {
+        this.active = !this.active
       }
     },
     components: {
-      'v-partHeader':
-      partHeader
+      'v-partHeader': partHeader,
+      'v-chapter': chapter,
     }
   }
 </script>
@@ -148,8 +158,7 @@
   }
 
   .detailForm .main {
-    padding: 10px;
-    padding-bottom: 0;
+    padding: 10px 10px 0;
   }
 
   .detailForm .main .info {
@@ -167,7 +176,7 @@
   }
 
   .detailForm .main .info p {
-    margin: 0px;
+    margin: 0;
   }
 
   .d-nowrap {
@@ -182,7 +191,7 @@
   }
 
   .detailForm .main .info p {
-    margin: 0px;
+    margin: 0;
   }
 
   .detailForm .main .info .bottom {
@@ -235,6 +244,17 @@
   .detailForm .detailContent p {
     font-size: 13px;
     margin: 0;
+    overflow: hidden;
+  }
+
+  .summary-hidden {
+    height: 30px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .summary-show {
+    height: auto;
   }
 
   .d-nowrap-clamp-2 {
