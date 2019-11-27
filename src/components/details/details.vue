@@ -85,7 +85,6 @@
         axios.get(
           baseUrl + '/book/' + id + '/detail'
         ).then(function (res) {
-          console.log("detail res is " + res);
           that.book = res.data;
         }).catch(function (err) {
           console.log(err)

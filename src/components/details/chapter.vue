@@ -3,7 +3,7 @@
     <div class="chapters" id="chapterList_1" style="display: block;">
       <ul class="am-avg-sm-4 am-thumbnails list hide">
         <li v-for="chapter in chapterList">
-          <div class="d-nowrap" @click="toContent(chapter)"> {{chapter.name}}}</div>
+          <div class="d-nowrap" @click="toContent(chapter)"> {{chapter.name}}</div>
         </li>
       </ul>
       <p class="more">

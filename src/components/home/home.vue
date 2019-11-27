@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <v-header v-on:showLeft="showLeft"></v-header>
-    <v-swiper></v-swiper>
+    <v-swiper :listImg="home.imgList"></v-swiper>
 
     <div class="imgList">
       <div class="titleBar">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <ul>
-        <li class="am-thumbnail" v-for="item in home.img_list" @click="showDetails(item.id)">
+        <li class="am-thumbnail" v-for="item in home.imgList" @click="showDetails(item.id)">
           <img :src="item.cover" alt="" class="originalImg"/>
           <p class="d-nowrap">{{item.name}}</p>
         </li>
@@ -73,7 +73,9 @@
 
   export default {
     data() {
-      return {somedata: false}
+      return {
+        bookList: []
+      }
     },
     created() {
       // 组件创建时对store里的action进行分发

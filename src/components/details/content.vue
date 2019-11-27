@@ -32,7 +32,7 @@
       init() {
         let id = this.$route.query.id;
         this.id = id;
-        this.name = this.$route.query.name
+        this.name = this.$route.query.name;
         this.getData(id)
       },
 
@@ -42,7 +42,6 @@
         axios.get(
           baseUrl + '/chapter/' + id + '/lessons')
           .then(function (res) {
-          console.log("chapter res is " + res);
           that.lessonList = res.data;
         }).catch(function (err) {
           console.log(err)
@@ -67,7 +66,7 @@
     top: 45px;
     position: fixed;
     overflow: auto;
-    padding-bottom: 20px;
+    padding-bottom: 45px;
   }
 
   .am-thumbnail img {

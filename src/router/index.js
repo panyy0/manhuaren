@@ -22,7 +22,11 @@ const routes = [
     children: [
       {
         path: '/chapter',
-        component: chapter
+        component: chapter,
+        meta: {
+          //此组件需要被缓存
+          keepAlive: true
+        }
       },
       {
         path: '/others',
