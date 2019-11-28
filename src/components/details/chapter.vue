@@ -3,7 +3,7 @@
     <div class="chapters" id="chapterList_1" style="display: block;">
       <ul class="am-avg-sm-4 am-thumbnails list hide">
         <li v-for="chapter in chapterList">
-          <div class="d-nowrap" @click="toContent(chapter)"> {{chapter.name}}</div>
+          <div class="d-nowrap" @click="toContent(chapter)" :class="{ 'active': chapter.selected === true }"> {{chapter.name}}</div>
         </li>
       </ul>
       <p class="more">
@@ -18,8 +18,8 @@
 
   export default {
     created: function () {
-      this.bookId = this.$route.query.part;
-      this.getChapterList(this.bookId, this.page, this.pageSize);
+
+      this.init();
     },
     data() {
       return {
@@ -31,12 +31,20 @@
         show: true
       }
     },
-    computed: {
-
-    },
+    computed: {},
     methods: {
+      init() {
+        this.bookId = this.$route.query.part;
+        this.page = 1;
+        this.chapterList = [];
+        this.getChapterList(this.bookId, this.page, this.pageSize);
+      },
       toContent: function (chapter) {
-        this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
+        this.chapterList.forEach(function (item) {
+          item.selected = item.id === chapter.id;
+        });
+
+        // this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
       },
       getChapterList: function (id, page, pageSize) {
         let baseUrl = process.env.DOMAIN;
@@ -49,7 +57,6 @@
             }
           }
         ).then(function (res) {
-          console.log("chapter res is " + res);
           that.chapterList.push(...res.data.dataList);
           ++that.page;
           that.showTotal(res.data.totalCount);
@@ -79,7 +86,16 @@
         });
       }
     },
-    components: {}
+    components: {},
+    beforeRouteLeave(to, from, next) {
+      from.meta.isBack = true;
+      next();
+    },
+    activated() {
+      if (!this.$route.meta.isBack) {
+        this.init();
+      }
+    }
   }
 </script>
 
@@ -115,6 +131,11 @@
     font-size: 13px;
     color: #444;
     border: 1px solid #eee;
+  }
+
+  .active {
+    background: #d93d40 !important;
+    color: #fff;
   }
 
   .chapterList .more {
