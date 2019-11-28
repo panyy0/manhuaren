@@ -19,7 +19,7 @@
     props: {
       listImg: {
         type: Array,
-        default: []
+        default: () => []
       }
     },
     mounted() {

@@ -74,7 +74,8 @@
   export default {
     data() {
       return {
-        bookList: []
+        bookList: [],
+        somedata: false
       }
     },
     created() {
@@ -106,6 +107,10 @@
 //	Vue.nextTick(function () {
 //vm.$el.textContent === 'new message' // true
 //}
+    beforeRouteLeave(to, from ,next) {
+      to.meta.isBack = false;
+      next();
+    },
     components: {
       'v-header': header,
       'v-swiper': swiper,

@@ -25,7 +25,8 @@ const routes = [
         component: chapter,
         meta: {
           //此组件需要被缓存
-          keepAlive: true
+          keepAlive: true,
+          isBack: true
         }
       },
       {

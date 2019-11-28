@@ -61,7 +61,7 @@
 
   export default {
     created: function () {
-      this.getBook();
+      this.init()
     },
     data() {
       return {
@@ -73,6 +73,12 @@
       }
     },
     methods: {
+      init() {
+        this.book = {};
+        this.totalCount = 0;
+        this.active = false;
+        this.getBook();
+      },
       getBook: function () {
         //获取路由传参
         let that = this;
@@ -103,6 +109,15 @@
     components: {
       'v-partHeader': partHeader,
       'v-chapter': chapter,
+    },
+    beforeRouteLeave(to, from, next) {
+      from.meta.isBack = true;
+        next();
+    },
+    activated() {
+      if (!this.$route.meta.isBack) {
+        this.init();
+      }
     }
   }
 </script>
