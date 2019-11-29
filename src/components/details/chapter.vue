@@ -3,7 +3,7 @@
     <div class="chapters" id="chapterList_1" style="display: block;">
       <ul class="am-avg-sm-4 am-thumbnails list hide">
         <li v-for="chapter in chapterList">
-          <div class="d-nowrap" @click="toContent(chapter)" :class="{ 'active': chapter.selected === true }"> {{chapter.name}}</div>
+          <div class="d-nowrap" @click="toContent(chapter)" :class="{ 'active': chapter.selected === 1 }"> {{chapter.name}}</div>
         </li>
       </ul>
       <p class="more">
@@ -40,11 +40,15 @@
         this.getChapterList(this.bookId, this.page, this.pageSize);
       },
       toContent: function (chapter) {
-        this.chapterList.forEach(function (item) {
-          item.selected = item.id === chapter.id;
-        });
+        let list = this.chapterList;
+        for (let item of list) {
+          item.selected = (item.id === chapter.id ? 1 : 0);
+        }
+        this.chapterList = [];
+        this.chapterList.push(...list);
 
-        // this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
+
+        this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
       },
       getChapterList: function (id, page, pageSize) {
         let baseUrl = process.env.DOMAIN;
