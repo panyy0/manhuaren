@@ -3,7 +3,9 @@
     <div class="chapters" id="chapterList_1" style="display: block;">
       <ul class="am-avg-sm-4 am-thumbnails list hide">
         <li v-for="chapter in chapterList">
-          <div class="d-nowrap" @click="toContent(chapter)" :class="{ 'active': chapter.selected === 1 }"> {{chapter.name}}</div>
+          <div class="d-nowrap" @click="toContent(chapter)" :class="{ 'active': chapter.selected === 1 }">
+            {{chapter.name}}
+          </div>
         </li>
       </ul>
       <p class="more">
@@ -28,15 +30,17 @@
         page: 1,
         pageSize: 20,
         count: 0,
+        totalPage: 0,
         show: true
       }
     },
     computed: {},
     methods: {
       init() {
+        this.chapterList = [];
         this.bookId = this.$route.query.part;
         this.page = 1;
-        this.chapterList = [];
+        this.show = true;
         this.getChapterList(this.bookId, this.page, this.pageSize);
       },
       toContent: function (chapter) {
@@ -46,8 +50,6 @@
         }
         this.chapterList = [];
         this.chapterList.push(...list);
-
-
         this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
       },
       getChapterList: function (id, page, pageSize) {
@@ -61,9 +63,16 @@
             }
           }
         ).then(function (res) {
-          that.chapterList.push(...res.data.dataList);
-          ++that.page;
+          let list = that.chapterList;
+          that.chapterList = [];
+          list.push(...res.data.dataList);
+          that.chapterList = list;
+          that.totalPage = res.data.totalPage;
           that.showTotal(res.data.totalCount);
+          if (that.page >= that.totalPage) {
+            that.show = false;
+          }
+          ++that.page;
         }).catch(function (err) {
           console.log(err)
         });
@@ -92,7 +101,17 @@
     },
     components: {},
     beforeRouteLeave(to, from, next) {
-      from.meta.isBack = true;
+      if (to.name === 'content') {
+        if (!from.meta.keepAlive) {
+          from.meta.keepAlive = true;
+        }
+        from.meta.isBack = true;
+      } else {
+        from.meta.keepAlive = false;
+        from.meta.isBack = false;
+        to.meta.keepAlive = false;
+        this.$destroy();
+      }
       next();
     },
     activated() {

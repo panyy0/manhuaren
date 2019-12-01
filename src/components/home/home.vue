@@ -171,7 +171,7 @@
       }
 
       p {
-        font-size: 15px;
+        font-size: 12px;
         color: #444;
         text-align: center;
         margin: 5px;

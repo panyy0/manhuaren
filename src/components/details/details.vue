@@ -112,7 +112,7 @@
     },
     beforeRouteLeave(to, from, next) {
       from.meta.isBack = true;
-        next();
+      next();
     },
     activated() {
       if (!this.$route.meta.isBack) {
