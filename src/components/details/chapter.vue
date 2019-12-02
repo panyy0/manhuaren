@@ -20,7 +20,6 @@
 
   export default {
     created: function () {
-
       this.init();
     },
     data() {
@@ -63,10 +62,15 @@
             }
           }
         ).then(function (res) {
-          let list = that.chapterList;
+          that.chapterList.push(...res.data.dataList);
+          let map = new Map();
+          that.chapterList.forEach((item) => {
+            if (!map.has(item.id)) {
+              map.set(item.id, item);
+            }
+          });
           that.chapterList = [];
-          list.push(...res.data.dataList);
-          that.chapterList = list;
+          that.chapterList.push(...map.values());
           that.totalPage = res.data.totalPage;
           that.showTotal(res.data.totalCount);
           if (that.page >= that.totalPage) {
