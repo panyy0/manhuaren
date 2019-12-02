@@ -60,9 +60,7 @@
   import axios from 'axios'
 
   export default {
-    created: function () {
-      this.init()
-    },
+
     data() {
       return {
         book: {},

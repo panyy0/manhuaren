@@ -19,9 +19,7 @@
   import axios from 'axios'
 
   export default {
-    created: function () {
-      this.init();
-    },
+
     data() {
       return {
         bookId: 1,
@@ -63,14 +61,9 @@
           }
         ).then(function (res) {
           that.chapterList.push(...res.data.dataList);
-          let map = new Map();
-          that.chapterList.forEach((item) => {
-            if (!map.has(item.id)) {
-              map.set(item.id, item);
-            }
-          });
+          let list = that.chapterList;
           that.chapterList = [];
-          that.chapterList.push(...map.values());
+          that.chapterList.push(...list);
           that.totalPage = res.data.totalPage;
           that.showTotal(res.data.totalCount);
           if (that.page >= that.totalPage) {
