@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
-//import VueAxios from 'vue-axios'
+import request from '../util/common'
 
 Vue.use(Vuex);
 //Vue.use(VueAxios, axios)
@@ -26,16 +25,9 @@ const store = new Vuex.Store({
   //异步获取数据，commit给mutations，mutations改变state
   actions: {
     getData(context) {
-      let baseUrl = process.env.DOMAIN;
-      axios({
-        method: 'get',
-        url: baseUrl + '/book/home',
-        data: ''
-      }).then(function (res) {
+      request.get('/book/home', {}, function (res) {
         context.commit('getData', res)
-      }).catch(function (err) {
-        console.log(err)
-      })
+      });
     }
   }
 });
