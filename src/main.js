@@ -5,7 +5,12 @@ import App from './App'
 import router from './router'
 import store from './store'
 //import home from './components/home/home'
+import request from './util/common'
+import Mint from 'mint-ui';
+import 'mint-ui/lib/style.css';
 
+Vue.prototype.request = request;
+Vue.use(Mint);
 new Vue({
 router,
 store,

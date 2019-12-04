@@ -18,7 +18,7 @@
 
 <script>
   import header from '../header/contentHeader'
-  import axios from 'axios'
+
   export default {
     created() {
       this.init()
@@ -39,15 +39,11 @@
       },
 
       getData(id) {
-        let baseUrl = process.env.DOMAIN;
         let that = this;
-        axios.get(
-          baseUrl + '/chapter/' + id + '/lessons')
-          .then(function (res) {
-          that.lessonList = res.data;
-        }).catch(function (err) {
-          console.log(err)
-        });
+        that.request.get('/chapter/' + id + '/lessons', {}, function (res) {
+          that.lessonList = [];
+          that.lessonList.push(...res.data);
+        })
       }
     },
     components: {

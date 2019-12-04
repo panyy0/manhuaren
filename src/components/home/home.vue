@@ -81,7 +81,6 @@
     created() {
       // 组件创建时对store里的action进行分发
       this.$store.dispatch('getData');
-      console.log("home初始化")
     },
     computed: {
       home() {

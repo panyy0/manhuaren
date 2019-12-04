@@ -16,7 +16,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
 
   export default {
 
@@ -38,6 +37,7 @@
         this.bookId = this.$route.query.part;
         this.page = 1;
         this.show = true;
+        this.count = 0;
         this.getChapterList(this.bookId, this.page, this.pageSize);
       },
       toContent: function (chapter) {
@@ -50,16 +50,14 @@
         this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
       },
       getChapterList: function (id, page, pageSize) {
-        let baseUrl = process.env.DOMAIN;
         let that = this;
-        axios.get(
-          baseUrl + '/book/' + id + '/chapters', {
-            params: {
-              'page': page,
-              'pageSize': pageSize
-            }
+        let config = {
+          params: {
+            'page': page,
+            'pageSize': pageSize
           }
-        ).then(function (res) {
+        };
+        that.request.get('/book/' + id + '/chapters', config, function (res) {
           that.chapterList.push(...res.data.dataList);
           let list = that.chapterList;
           that.chapterList = [];
@@ -70,29 +68,26 @@
             that.show = false;
           }
           ++that.page;
-        }).catch(function (err) {
-          console.log(err)
-        });
+        })
       },
       showTotal(count) {
         this.$emit('showTotal', count)
       },
       getMore() {
-        this.getChapterList(this.bookId, this.page, this.pageSize);
+
         if (++this.count > 2) {
           this.getMoreChapters();
+        } else {
+          this.getChapterList(this.bookId, this.page, this.pageSize);
         }
       },
       getMoreChapters() {
-        let baseUrl = process.env.DOMAIN;
         let that = this;
-        axios.get(
-          baseUrl + '/book/' + that.bookId + '/chapters/all'
-        ).then(function (res) {
-          that.chapterList = res.data;
+        that.request.get('/book/' + that.bookId + '/chapters/all', {}, function (res) {
+          that.chapterList = [];
+          that.chapterList.push(...res.data);
           that.show = false;
-        }).catch(function (err) {
-          console.log(err)
+          that.count = 0;
         });
       }
     },
