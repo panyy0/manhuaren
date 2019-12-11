@@ -79,6 +79,7 @@
       }
     },
     created() {
+      this.$store.state.currentChapter = {};
       // 组件创建时对store里的action进行分发
       this.$store.dispatch('getData');
     },
@@ -93,7 +94,8 @@
         this.$router.push({path: 'original', query: {part: e}});
       },
       showDetails(e) {
-        this.$router.push({path: 'details', query: {part: e}});
+        this.$store.state.currentChapter.parentId = e;
+        this.$router.push({path: 'details'});
       },
       showLeft(somedata) {
         this.somedata = somedata;
@@ -106,7 +108,7 @@
 //	Vue.nextTick(function () {
 //vm.$el.textContent === 'new message' // true
 //}
-    beforeRouteLeave(to, from ,next) {
+    beforeRouteLeave(to, from, next) {
       to.meta.isBack = false;
       next();
     },

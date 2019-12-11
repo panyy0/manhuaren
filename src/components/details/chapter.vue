@@ -2,8 +2,8 @@
   <div class="chapter">
     <div class="chapters" id="chapterList_1" style="display: block;">
       <ul class="am-avg-sm-4 am-thumbnails list hide">
-        <li v-for="chapter in chapterList">
-          <div class="d-nowrap" @click="toContent(chapter)" :class="{ 'active': chapter.selected === 1 }">
+        <li v-for="(chapter, index) in chapterList">
+          <div class="d-nowrap" @click="toContent(chapter, index)" :class="{ 'active': chapter.selected === 1 }">
             {{chapter.name}}
           </div>
         </li>
@@ -27,27 +27,31 @@
         pageSize: 20,
         count: 0,
         totalPage: 0,
-        show: true
+        totalCount: 0,
+        show: true,
       }
     },
     computed: {},
     methods: {
       init() {
         this.chapterList = [];
-        this.bookId = this.$route.query.part;
+        this.bookId = this.$store.state.currentChapter.parentId;
         this.page = 1;
         this.show = true;
         this.count = 0;
         this.getChapterList(this.bookId, this.page, this.pageSize);
       },
-      toContent: function (chapter) {
-        let list = this.chapterList;
-        for (let item of list) {
-          item.selected = (item.id === chapter.id ? 1 : 0);
+      toContent: function (chapter, index) {
+        let chapterId = chapter.id;
+        let that = this;
+        if (index === 0) {
+          chapter.isEnd = true;
+        } else if (index === that.totalCount - 1) {
+          chapter.isFirst = true;
         }
-        this.chapterList = [];
-        this.chapterList.push(...list);
-        this.$router.push({path: 'content', query: {id: chapter.id, name: chapter.name}});
+        that.$store.state.currentChapter = chapter;
+        that.listSelected(chapterId);
+        that.$router.push({path: 'content'});
       },
       getChapterList: function (id, page, pageSize) {
         let that = this;
@@ -63,6 +67,7 @@
           that.chapterList = [];
           that.chapterList.push(...list);
           that.totalPage = res.data.totalPage;
+          that.totalCount = res.data.totalCount;
           that.showTotal(res.data.totalCount);
           if (that.page >= that.totalPage) {
             that.show = false;
@@ -88,7 +93,16 @@
           that.chapterList.push(...res.data);
           that.show = false;
           that.count = 0;
+          that.totalCount = that.chapterList.length;
         });
+      },
+      listSelected(chapterId) {
+        let list = this.chapterList;
+        this.chapterList = [];
+        for (let item of list) {
+          item.selected = (item.id === chapterId ? 1 : 0);
+          this.chapterList.push(item);
+        }
       }
     },
     components: {},
@@ -109,6 +123,12 @@
     activated() {
       if (!this.$route.meta.isBack) {
         this.init();
+      } else {
+        let chapterId = this.$store.state.currentChapter.id;
+        console.log('chapter id is ' + chapterId);
+        if (chapterId) {
+          this.listSelected(chapterId);
+        }
       }
     }
   }

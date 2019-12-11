@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     getTopData: {
       errno: 1,
       top: {}
-    }
+    },
+    currentChapter: {}
   },
 //同步方法
   mutations: {

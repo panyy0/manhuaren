@@ -57,7 +57,6 @@
 <script>
   import partHeader from '../header/partHeader'
   import chapter from '../details/chapter'
-  import axios from 'axios'
 
   export default {
 
@@ -78,22 +77,15 @@
         this.getBook();
       },
       getBook: function () {
-        //获取路由传参
         let that = this;
-        let id = this.$route.query.part;
+        let id = this.$store.state.currentChapter.parentId;
         if (!id || id < 1) {
           console.log("错误的ID");
           return;
         }
-        let baseUrl = process.env.DOMAIN;
-        axios.get(
-          baseUrl + '/book/' + id + '/detail'
-        ).then(function (res) {
+        this.request.get('/book/' + id + '/detail', {}, function (res) {
           that.book = res.data;
-        }).catch(function (err) {
-          console.log(err)
         });
-
       },
 
       showTotal(count) {
