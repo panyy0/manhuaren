@@ -49,7 +49,7 @@
         } else if (index === that.totalCount - 1) {
           chapter.isFirst = true;
         }
-        that.$store.state.currentChapter = chapter;
+        that.populateChapter(chapter);
         that.listSelected(chapterId);
         that.$router.push({path: 'content'});
       },
@@ -98,11 +98,18 @@
       },
       listSelected(chapterId) {
         let list = this.chapterList;
-        this.chapterList = [];
+
         for (let item of list) {
           item.selected = (item.id === chapterId ? 1 : 0);
-          this.chapterList.push(item);
         }
+        this.chapterList = [];
+        this.chapterList.push(...list);
+      },
+      populateChapter(chapter) {
+        this.$store.state.currentChapter.id = chapter.id;
+        this.$store.state.currentChapter.name = chapter.name;
+        this.$store.state.currentChapter.isFirst = chapter.isFirst === true;
+        this.$store.state.currentChapter.isEnd = chapter.isEnd === true;
       }
     },
     components: {},

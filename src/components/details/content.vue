@@ -99,7 +99,6 @@
 
       next() {
         let chapter = this.$store.state.currentChapter;
-        debugger
         if (chapter.isEnd) {
           Toast({
             message: "已经是最后一章", //弹窗内容
