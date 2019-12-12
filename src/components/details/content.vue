@@ -4,7 +4,7 @@
       <v-header :name="name"></v-header>
     </div>
 
-    <div class="content-list">
+    <div id="list_content" class="content-list">
       <ul>
         <li class="am-thumbnail" v-for="item in lessonList">
           <img :src="item.content" alt="" class="originalImg"/>
@@ -26,7 +26,7 @@
 
 <script>
   import header from '../header/contentHeader'
-  import { Toast } from "mint-ui";
+  import { Toast, Indicator } from "mint-ui";
 
   let activeObj = {
     color: '#757575'
@@ -60,21 +60,21 @@
       },
 
       getData(id) {
+        if (!id) {
+          return;
+        }
         let that = this;
         that.request.get('/chapter/' + id + '/lessons', {}, function (res) {
           that.lessonList = [];
-          that.lessonList.push(...res.data);
+          let list = res.data;
+          that.getContentLoaded(list);
           that.showPage = true;
         })
       },
       prev() {
         let chapter = this.$store.state.currentChapter;
         if (chapter.isFirst) {
-          Toast({
-            message: "已经是第一章", //弹窗内容
-            position: "middle", //弹窗位置
-            duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
-          });
+          this.toast('已经是第一章');
           return;
         }
         let that = this;
@@ -82,17 +82,15 @@
 
           let result = res.data;
           if (!result.name) {
-            Toast({
-              message: "已经是第一章", //弹窗内容
-              position: "middle", //弹窗位置
-              duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
-            });
+            this.toast('已经是第一章');
             return;
           }
           that.lessonList = [];
+          that.$forceUpdate();
           that.populateChapter(result);
           if (result.lessonVOList.length > 0) {
-            that.lessonList.push(...result.lessonVOList);
+            let list = result.lessonVOList;
+            that.getContentLoaded(list);
           }
         });
       },
@@ -100,28 +98,24 @@
       next() {
         let chapter = this.$store.state.currentChapter;
         if (chapter.isEnd) {
-          Toast({
-            message: "已经是最后一章", //弹窗内容
-            position: "middle", //弹窗位置
-            duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
-          });
+          this.toast('已经是最后一章');
           return;
         }
         let that = this;
         that.request.get('/chapter/' + chapter.id + '/next/lessons', {}, function (res) {
           let result = res.data;
           if (!result.name) {
-            Toast({
-              message: "已经是最后一章", //弹窗内容
-              position: "middle", //弹窗位置
-              duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
-            });
+            this.toast('已经是最后一章');
             return;
           }
           that.lessonList = [];
+          that.$forceUpdate();
+          that.scrollToTop();
           that.populateChapter(result);
           if (result.lessonVOList.length > 0) {
-            that.lessonList.push(...result.lessonVOList);
+            let list = result.lessonVOList;
+            // that.lessonList.push(...list);
+            that.getContentLoaded(list);
           }
         });
       },
@@ -134,6 +128,52 @@
         this.name = chapter.name;
         this.prevObj = chapter.isFirst ? disabledObj : activeObj;
         this.nextObj = chapter.isEnd ? disabledObj : activeObj;
+      },
+      getContentLoaded(contentList) {
+        let that = this;
+        let index = 0;
+        let rank = 0;
+        that.imageLoading();
+        that.scrollToTop();
+        for (let item of contentList) {
+          let bgImg = new Image();
+          bgImg.alt = rank.toString();
+          bgImg.onload = function() {
+            that.$set(that.lessonList, this.alt, contentList[this.alt]);
+            ++index;
+            if (index ===  contentList.length - 1) {
+              that.closeLoading();
+            }
+          };
+          // 获取背景图片的url
+          bgImg.src = item.content;
+          that.lessonList.push({content: ''});
+          ++rank;
+        }
+
+
+      },
+
+      scrollToTop() {
+        document.getElementById('list_content').scrollTop = 0;
+      },
+
+      toast(message) {
+        Toast({
+          message: message, //弹窗内容
+          position: "middle", //弹窗位置
+          duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
+        });
+      },
+
+      imageLoading() {
+        Indicator.open({
+          text: '加载中, 请稍后...'
+        });
+      },
+
+      closeLoading() {
+        Indicator.close();
       }
     },
     components: {
