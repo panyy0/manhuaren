@@ -1,15 +1,14 @@
 <template>
   <div class="swiper-container">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide" v-for="book in listImg" :style="{ backgroundImage: 'url(' + book.banner + ')' }"></div>
-    </div>
-    <div class="swiper-pagination swiper-pagination-white"></div>
+    <mt-swipe :auto="3000">
+      <mt-swipe-item v-for="(item, index) of listImg" :key="index">
+        <img :src="item.banner" class="img" @click="handleChange(item.id)"/>
+      </mt-swipe-item>
+    </mt-swipe>
   </div>
 </template>
 
 <script>
-  import Swiper from 'swiper'
-  import 'swiper/dist/css/swiper.min.css'
 
   //图片地址 写在模板不出错，是因为你已经有模板的图片解析器了，在JS中需要import
   export default {
@@ -23,17 +22,13 @@
       }
     },
     mounted() {
-      //console.log('mounted', this)
-      let swiper = new Swiper('.swiper-container', {
-        pagination: '.swiper-pagination',
-        paginationClickable: true,
-        loop: true,
-        speed: 600,
-        autoplay: 3000,
-        onTouchEnd: function () {
-          swiper.startAutoplay()
-        }
-      });
+
+    },
+    methods: {
+      handleChange(id) {
+        console.log("id=" + id);
+        this.$parent.showDetails(id);
+      }
     }
   }
 </script>
@@ -44,28 +39,9 @@
     width: 100%;
     height: 10rem;
 
-    .swiper-wrapper {
+    .img {
       width: 100%;
       height: 100%;
-    }
-
-    .swiper-slide {
-      background-position: center;
-      background-size: cover;
-      width: 100%;
-      height: 100%;
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    .swiper-pagination-bullet {
-      width: 0.833rem;
-      height: 0.833rem;
-      display: inline-block;
-      background: #7c5e53;
     }
   }
 </style>

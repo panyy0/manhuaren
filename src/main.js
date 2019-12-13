@@ -8,6 +8,10 @@ import store from './store'
 import request from './util/common'
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
+import { Swipe, SwipeItem } from 'mint-ui';
+
+Vue.component(Swipe.name, Swipe);
+Vue.component(SwipeItem.name, SwipeItem);
 
 Vue.prototype.request = request;
 Vue.use(Mint);

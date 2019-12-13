@@ -156,8 +156,7 @@
   }
 
   ul {
-    padding: 0 10px;
-    padding-bottom: 5px;
+    padding: 0 10px 5px;
     margin-left: -.5rem;
     margin-right: -.5rem;
 
@@ -169,6 +168,7 @@
 
       .originalImg {
         width: 100%;
+        height: 8rem;
       }
 
       p {
