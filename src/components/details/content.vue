@@ -26,7 +26,7 @@
 
 <script>
   import header from '../header/contentHeader'
-  import { Toast, Indicator, Lazyload } from "mint-ui";
+  import { Toast } from "mint-ui";
 
   let activeObj = {
     color: '#757575'
