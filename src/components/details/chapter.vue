@@ -46,7 +46,8 @@
         let that = this;
         if (index === 0) {
           chapter.isEnd = true;
-        } else if (index === that.totalCount - 1) {
+        }
+        if (index === that.totalCount - 1) {
           chapter.isFirst = true;
         }
         that.populateChapter(chapter);
