@@ -14,12 +14,6 @@
           <p class="subtitle d-nowrap"> 作者：{{book.author}} </p>
           <p class="bottom d-nowrap">更新至{{book.progress ? book.progress : ""}}</p>
         </div>
-        <div class="sorce">
-          <div class="block">
-            <div class="top">10<span></span></div>
-          </div>
-          <img src="http://js16.tel.cdndm.com/v201707041718/manhuaren/images/mobile/detail_flower_1.png">
-        </div>
       </div>
       <ul class="am-avg-sm-2 am-thumbnails toolBar">
         <li class="am-thumbnail" id="shownextchapter">

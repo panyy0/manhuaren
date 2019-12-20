@@ -4,9 +4,9 @@
     <div class="classList">
 
       <ul class="am-avg-sm-3 am-thumbnails list">
-        <li class="am-thumbnail" v-for="items in original.imgList" @click="showDetails(items)">
-          <div class="container" style="height: 122.36px;">
-            <img :src="items.img" alt="" style="height: 122.36px;">
+        <li class="am-thumbnail" v-for="items in original.imgList" @click="showDetails(items.id)">
+          <div class="container">
+            <img :src="items.cover" alt="">
             <span class="tip">{{items.progress}}</span>
           </div>
           <p class="d-nowrap">{{items.name}}</p>
@@ -27,13 +27,14 @@
     },
     computed: {
       original() {
-        //获取路由传参
+        //这里修改为之后分页加载
         return this.$store.state.getHomeData.home
       }
     },
     methods: {
       showDetails(e) {
-        this.$router.push({path: 'details', query: {part: e}});
+        this.$store.state.currentChapter.parentId = e;
+        this.$router.push({path: 'details'});
       }
     },
     components: {
@@ -60,11 +61,13 @@
 
   li .container {
     position: relative;
+    height: 8rem;
   }
 
   li .container img {
     border-radius: 3px;
     width: 100%;
+    height: 100%;
   }
 
   li {
