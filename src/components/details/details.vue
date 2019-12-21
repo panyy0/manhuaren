@@ -99,7 +99,8 @@
       next();
     },
     activated() {
-      if (!this.$route.meta.isBack) {
+      let back = this.$route.meta.isBack;
+      if (!back) {
         this.init();
       }
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="original">
     <v-partHeader :name="original.title"></v-partHeader>
-    <div class="classList">
+    <mt-loadmore class="classList" :top-method="loadTop" @top-status-change="handleTopChange">
 
       <ul class="am-avg-sm-3 am-thumbnails list">
         <li class="am-thumbnail" v-for="items in original.imgList" @click="showDetails(items.id)">
@@ -12,8 +12,11 @@
           <p class="d-nowrap">{{items.name}}</p>
         </li>
       </ul>
-    </div>
-  </div>
+      <div slot="top" class="mint-loadmore-top">
+        <span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">↓</span>
+        <span v-show="topStatus === 'loading'">Loading...</span>
+      </div>
+    </mt-loadmore>
   </div>
 </template>
 
@@ -23,7 +26,9 @@
 
   export default {
     data() {
-      return {}
+      return {
+        topStatus: '',
+      }
     },
     computed: {
       original() {
@@ -32,15 +37,27 @@
       }
     },
     methods: {
+      handleTopChange(status) {
+        this.topStatus = status;
+      },
       showDetails(e) {
         this.$store.state.currentChapter.parentId = e;
         this.$router.push({path: 'details'});
+      },
+      loadTop() {
+      // ...// 加载更多数据
+      //   this.$refs.loadmore.onTopLoaded();
+        console.log('fasdasdsadasd');
       }
     },
     components: {
       'v-header': header,
       'v-partHeader': partHeader
-    }
+    },
+    beforeRouteLeave(to, from, next) {
+      to.meta.isBack = false;
+      next();
+    },
   }
 </script>
 
@@ -61,7 +78,7 @@
 
   li .container {
     position: relative;
-    height: 8rem;
+    height: 10rem;
   }
 
   li .container img {
@@ -75,7 +92,7 @@
     border: 0;
     background-color: transparent;
     margin-bottom: 0;
-    padding: 0 .5rem .5rem;
+    padding: 0 .5rem 1.5rem;
     width: (100%/3);
   }
 
@@ -106,7 +123,7 @@
 
   .d-nowrap {
     white-space: nowrap;
-    font-size: 15px;
+    font-size: 12px;
     text-align: center;
   }
 
