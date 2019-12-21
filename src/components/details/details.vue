@@ -3,7 +3,7 @@
     <v-partHeader :name="book.name"></v-partHeader>
     <!--封面图片-->
     <div class="coverForm" style="overflow: hidden; height: 245.76px;">
-      <img :src="book.banner" alt="book.title" title="book.title">
+      <img v-lazy="book.banner" alt="book.title" title="book.title">
     </div>
     <!--漫画详情-->
     <div class="detailForm d-border">
