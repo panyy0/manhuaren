@@ -6,7 +6,7 @@
     <div class="imgList">
       <div class="titleBar">
         <div class="icon left" v-bind:class="home.img"></div>
-        <span class="title">{{home.title}}</span>
+        <span class="title">精品漫画</span>
         <div class="more-wapper right" @click="toOriginal">
           <span class="more">更多</span>
           <div class="icon-arrow_right icon">

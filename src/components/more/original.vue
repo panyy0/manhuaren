@@ -1,20 +1,20 @@
 <template>
   <div class="original">
-    <v-partHeader :name="original.title"></v-partHeader>
-    <mt-loadmore class="classList" :top-method="loadTop" @top-status-change="handleTopChange">
+    <v-partHeader :name="title"></v-partHeader>
+    <mt-loadmore class="classList" :top-method="loadTop" @top-status-change="handleTopChange" ref="loadmore">
 
       <ul class="am-avg-sm-3 am-thumbnails list">
-        <li class="am-thumbnail" v-for="items in original.imgList" @click="showDetails(items.id)">
+        <li class="am-thumbnail" v-for="item in bookList" @click="showDetails(item.id)">
           <div class="container">
-            <img :src="items.cover" alt="">
-            <span class="tip">{{items.progress}}</span>
+            <img v-lazy="item.cover" alt="">
+            <span class="tip">{{item.progress}}</span>
           </div>
-          <p class="d-nowrap">{{items.name}}</p>
+          <p class="d-nowrap">{{item.name}}</p>
         </li>
       </ul>
       <div slot="top" class="mint-loadmore-top">
         <span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">↓</span>
-        <span v-show="topStatus === 'loading'">Loading...</span>
+        <span v-show="topStatus === 'loading'">加载中...</span>
       </div>
     </mt-loadmore>
   </div>
@@ -23,31 +23,58 @@
 <script>
   import header from '../header/header'
   import partHeader from '../header/partHeader'
+  import {Toast} from "mint-ui";
 
   export default {
+    created() {
+      this.getData();
+    },
     data() {
       return {
+        title: '全部漫画',
         topStatus: '',
+        page: 1,
+        pageSize: 9,
+        bookList: [],
+        totalPage: 1
       }
     },
-    computed: {
-      original() {
-        //这里修改为之后分页加载
-        return this.$store.state.getHomeData.home
-      }
-    },
+    computed: {},
     methods: {
       handleTopChange(status) {
         this.topStatus = status;
+        if (status === 'loading') {
+          if (this.page > this.totalPage) {
+            Toast({
+              message: '已经是全部漫画了', //弹窗内容
+              position: "middle", //弹窗位置
+              duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
+            });
+            return;
+          }
+          this.getData();
+        }
       },
       showDetails(e) {
         this.$store.state.currentChapter.parentId = e;
         this.$router.push({path: 'details'});
       },
       loadTop() {
-      // ...// 加载更多数据
-      //   this.$refs.loadmore.onTopLoaded();
-        console.log('fasdasdsadasd');
+        // ...// 加载更多数据
+        this.$refs.loadmore.onTopLoaded();
+      },
+      getData() {
+        //这里修改为之后分页加载
+        let that = this;
+        that.request.get('/book/list/more', {
+          page: that.page,
+          pageSize: that.pageSize
+        }, function (res) {
+          let data = res.data;
+          ++that.page;
+          that.totalPage = data.totalPage;
+          that.bookList.push(...data.dataList);
+        });
       }
     },
     components: {
