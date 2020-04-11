@@ -1,45 +1,90 @@
 <template>
   <div class="original">
-    <v-partHeader :name="original.title"></v-partHeader>
-    <div class="classList">
+    <v-partHeader :name="title"></v-partHeader>
+    <mt-loadmore class="classList" :top-method="loadTop" @top-status-change="handleTopChange" ref="loadmore">
 
       <ul class="am-avg-sm-3 am-thumbnails list">
-        <li class="am-thumbnail" v-for="items in original.imgList" @click="showDetails(items)">
-          <div class="container" style="height: 122.36px;">
-            <img :src="items.img" alt="" style="height: 122.36px;">
-            <span class="tip">{{items.progress}}</span>
+        <li class="am-thumbnail" v-for="item in bookList" @click="showDetails(item.id)">
+          <div class="container">
+            <img v-lazy="item.cover" alt="">
+            <span class="tip">{{item.progress}}</span>
           </div>
-          <p class="d-nowrap">{{items.name}}</p>
+          <p class="d-nowrap">{{item.name}}</p>
         </li>
       </ul>
-    </div>
-  </div>
+      <div slot="top" class="mint-loadmore-top">
+        <span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">↓</span>
+        <span v-show="topStatus === 'loading'">加载中...</span>
+      </div>
+    </mt-loadmore>
   </div>
 </template>
 
 <script>
   import header from '../header/header'
   import partHeader from '../header/partHeader'
+  import {Toast} from "mint-ui";
 
   export default {
-    data() {
-      return {}
+    created() {
+      this.getData();
     },
-    computed: {
-      original() {
-        //获取路由传参
-        return this.$store.state.getHomeData.home
+    data() {
+      return {
+        title: '全部漫画',
+        topStatus: '',
+        page: 1,
+        pageSize: 9,
+        bookList: [],
+        totalPage: 1
       }
     },
+    computed: {},
     methods: {
+      handleTopChange(status) {
+        this.topStatus = status;
+        if (status === 'loading') {
+          if (this.page > this.totalPage) {
+            Toast({
+              message: '已经是全部漫画了', //弹窗内容
+              position: "middle", //弹窗位置
+              duration: 2000, //弹窗时间毫秒,如果值为-1，则不会消失
+            });
+            return;
+          }
+          this.getData();
+        }
+      },
       showDetails(e) {
-        this.$router.push({path: 'details', query: {part: e}});
+        this.$store.state.currentChapter.parentId = e;
+        this.$router.push({path: 'details'});
+      },
+      loadTop() {
+        // ...// 加载更多数据
+        this.$refs.loadmore.onTopLoaded();
+      },
+      getData() {
+        //这里修改为之后分页加载
+        let that = this;
+        that.request.get('/book/list/more', {
+          page: that.page,
+          pageSize: that.pageSize
+        }, function (res) {
+          let data = res.data;
+          ++that.page;
+          that.totalPage = data.totalPage;
+          that.bookList.push(...data.dataList);
+        });
       }
     },
     components: {
       'v-header': header,
       'v-partHeader': partHeader
-    }
+    },
+    beforeRouteLeave(to, from, next) {
+      to.meta.isBack = false;
+      next();
+    },
   }
 </script>
 
@@ -60,11 +105,13 @@
 
   li .container {
     position: relative;
+    height: 10rem;
   }
 
   li .container img {
     border-radius: 3px;
     width: 100%;
+    height: 100%;
   }
 
   li {
@@ -72,7 +119,7 @@
     border: 0;
     background-color: transparent;
     margin-bottom: 0;
-    padding: 0 .5rem .5rem;
+    padding: 0 .5rem 1.5rem;
     width: (100%/3);
   }
 
@@ -103,7 +150,7 @@
 
   .d-nowrap {
     white-space: nowrap;
-    font-size: 15px;
+    font-size: 12px;
     text-align: center;
   }
 

@@ -3,7 +3,7 @@
     <v-partHeader :name="book.name"></v-partHeader>
     <!--封面图片-->
     <div class="coverForm" style="overflow: hidden; height: 245.76px;">
-      <img :src="book.banner" alt="book.title" title="book.title">
+      <img v-lazy="book.banner" alt="book.title" title="book.title">
     </div>
     <!--漫画详情-->
     <div class="detailForm d-border">
@@ -13,12 +13,6 @@
           <p class="subtitle d-nowrap">类型：{{book.type}}</p>
           <p class="subtitle d-nowrap"> 作者：{{book.author}} </p>
           <p class="bottom d-nowrap">更新至{{book.progress ? book.progress : ""}}</p>
-        </div>
-        <div class="sorce">
-          <div class="block">
-            <div class="top">10<span></span></div>
-          </div>
-          <img src="http://js16.tel.cdndm.com/v201707041718/manhuaren/images/mobile/detail_flower_1.png">
         </div>
       </div>
       <ul class="am-avg-sm-2 am-thumbnails toolBar">
@@ -105,7 +99,8 @@
       next();
     },
     activated() {
-      if (!this.$route.meta.isBack) {
+      let back = this.$route.meta.isBack;
+      if (!back) {
         this.init();
       }
     }
