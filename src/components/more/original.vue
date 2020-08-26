@@ -74,7 +74,7 @@
           let data = res.data;
           ++that.page;
           that.totalPage = data.totalPage;
-          that.bookList.push(...data.dataList);
+          that.bookList.unshift(...data.dataList);
         });
       }
     },
