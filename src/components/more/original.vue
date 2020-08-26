@@ -66,10 +66,11 @@
       getData() {
         //这里修改为之后分页加载
         let that = this;
-        that.request.get('/book/list/more', {
-          page: that.page,
-          pageSize: that.pageSize
-        }, function (res) {
+        let params = {
+               page: that.page,
+               pageSize: that.pageSize
+           };
+        that.request.get('/book/list/more', { params }, function (res) {
           let data = res.data;
           ++that.page;
           that.totalPage = data.totalPage;
